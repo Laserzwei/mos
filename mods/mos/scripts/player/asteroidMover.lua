@@ -1,41 +1,47 @@
 package.path = package.path .. ";data/scripts/lib/?.lua"
+package.path = package.path .. ";mods/mos/scripts/lib/?.lua"
 require ("utility")
-require ("asteroidSpawningLib")
+require ("mods/mos/scripts/lib/asteroidSpawningLib")
 Placer = require("placer")
 
 MOD = "[mOS]"                               -- do not change
-VERSION = "[0.93] "
+VERSION = "[0.95] "
 
 MSSN = "isMarkedToMove"   --MoveStatuSaveName, gives the movestatus false,nil for not moving. true for needs to be moved
 
-asteroidsToMove = {}                        --{[id]= bool}
+asteroidsToMove = {}                        --{[id]= factionIndex}
 
 function initialize()
      if onServer() then
         Server():registerCallback("onPlayerLogOff", "onPlayerLogOff")
-     else
-        invokeServerFunction("onPlayerLogIn", Player().index)
+        onPlayerLogIn(Player().index)
      end
 end
 
 function onPlayerLogOff(playerIndex)
     if Player(playerIndex).name ~= Player().name then            --wrong player called
         return
-    end     
-    local unregisterOnSectorLeftValue = Player(playerIndex):unregisterCallback("onSectorLeft", "onSectorLeft")
-    local unregisterOnSectorEnteredValue = Player(playerIndex):unregisterCallback("onSectorEntered", "onSectorEntered")
-    
-    print(MOD..VERSION.."======mOS unloading Player "..Player(playerIndex).name.."======") 
+    end
+    local unregisterOnSectorLeftValue = Player(playerIndex):unregisterCallback("onSectorLeft", "mos_onSectorLeft")
+    local unregisterOnSectorEnteredValue = Player(playerIndex):unregisterCallback("onSectorEntered", "mos_onSectorEntered")
+
+    print(MOD..VERSION.."======mOS unloading Player "..Player(playerIndex).name.."======")
     print(MOD..VERSION.."Event unregisteration: "..tostring(unregisterOnSectorLeftValue).." | "..tostring(unregisterOnSectorEnteredValue))
 end
 
 function onPlayerLogIn(playerIndex)
     local player = Player(playerIndex)
-    player:registerCallback("onSectorLeft", "onSectorLeft")
-    player:registerCallback("onSectorEntered", "onSectorEntered")
+    player:registerCallback("onSectorLeft", "mos_onSectorLeft")
+    player:registerCallback("onSectorEntered", "mos_onSectorEntered")
 end
 
-function onSectorEntered(playerIndex, x, y)
+
+--[[
+Notice: The Table containing the asteroids to move is not saved to the harddrive.
+If the server crashes in the time after the "onSectorLeft"-event was fired and before "onSectorEntered"
+has been executed, then the asteroids will be lost.
+]]
+function mos_onSectorEntered(playerIndex, x, y)
     if Player().name ~= Player(playerIndex).name then return end
     if next(asteroidsToMove) == nil then return end
     local sec = systemTimeMs()
@@ -47,14 +53,14 @@ function onSectorEntered(playerIndex, x, y)
     print(MOD..VERSION.."Asteroid resolving needed "..(systemTimeMs()- sec).."ms")
 end
 
-function onSectorLeft(playerIndex, x, y)
+function mos_onSectorLeft(playerIndex, x, y)
     asteroidsToMove = getAsteroidsToMove(playerIndex)
-    --printTable(asteroidsToMove)
+    printTable(asteroidsToMove)
     destroyAsteroids(asteroidsToMove)
 end
 
 function getAsteroidsToMove(playerIndex)
-    local astroList = {Sector():getEntitiesByScript("data/scripts/entity/moveAsteroid.lua")}
+    local astroList = {Sector():getEntitiesByScript("mods/mos/scripts/entity/moveAsteroid.lua")}
     local retList = {}
     local numasteroids = 0
     for _, asteroid in pairs(astroList) do
@@ -82,7 +88,7 @@ function spawnAsteroidsToMove(asteroidList, playerIndex, x, y)
     local numasteroids = 0
     for id,factionIndex in pairs(asteroidList) do
         if factionIndex then
-            spawnClaimedAsteroid(factionIndex, x, y, desc) 
+            spawnClaimedAsteroid(factionIndex, x, y, desc)
             numasteroids = numasteroids + 1
         end
     end

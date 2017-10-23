@@ -59,6 +59,6 @@ function claim()
     Entity().factionIndex = faction.index
     Entity():addScript("minefounder.lua")
     Entity():addScript("sellobject.lua")
-    Entity():addScript("moveAsteroid.lua")    --mOS
+    Entity():addScript("mods/mos/scripts/entity/moveAsteroid.lua")    --mOS
     terminate()
 end
