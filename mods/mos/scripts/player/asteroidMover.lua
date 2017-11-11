@@ -47,15 +47,15 @@ function mos_onSectorEntered(playerIndex, x, y)
     local sec = systemTimeMs()
     spawnAsteroidsToMove(asteroidsToMove, playerIndex, x, y)
     asteroidsToMove = {}
-    print(MOD..VERSION.."Asteroid spawning needed "..(systemTimeMs()- sec).."ms")
+    --print(MOD..VERSION.."Asteroid spawning needed "..(systemTimeMs()- sec).."ms")
     local sec = systemTimeMs()
     Placer.resolveIntersections()
-    print(MOD..VERSION.."Asteroid resolving needed "..(systemTimeMs()- sec).."ms")
+    --print(MOD..VERSION.."Asteroid resolving needed "..(systemTimeMs()- sec).."ms")
 end
 
 function mos_onSectorLeft(playerIndex, x, y)
     asteroidsToMove = getAsteroidsToMove(playerIndex)
-    printTable(asteroidsToMove)
+    --printTable(asteroidsToMove)
     destroyAsteroids(asteroidsToMove)
 end
 
@@ -72,7 +72,7 @@ function getAsteroidsToMove(playerIndex)
         end
     end
     if numasteroids > 0 then
-        print(MOD..VERSION.."Spawning "..numasteroids.." Asteroids")
+        --print(MOD..VERSION.."Spawning "..numasteroids.." Asteroids")
     end
     return retList
 end
