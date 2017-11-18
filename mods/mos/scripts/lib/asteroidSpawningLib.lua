@@ -1,11 +1,11 @@
 package.path = package.path .. ";data/scripts/lib/?.lua"
 package.path = package.path .. ";mods/mos/scripts/entity/?.lua"
-package.path = package.path .. ";mods/mos/config/?.lua"
+
 MOD = "[mOS]"                           -- do not change
 VERSION = "[0.95] "
 SectorGenerator = require("SectorGenerator")
 PlanGenerator = require ("plangenerator")
-local config = require ("config")
+local mOSConfig = require ("mods/mos/config/mos")
 
 --create the Asteroid description
 function createAsteroidPlan(x, y)
@@ -25,7 +25,7 @@ end
 --create Asteroid and claim it
 function spawnClaimedAsteroid(factionIndex, secX, secY, desc)
 
-    local x,y,z = math.random(-config.MAXDISPERSION,config.MAXDISPERSION),math.random(-config.MAXDISPERSION,config.MAXDISPERSION),math.random(-config.MAXDISPERSION,config.MAXDISPERSION)
+    local x,y,z = math.random(-mOSConfig.MAXDISPERSION,mOSConfig.MAXDISPERSION),math.random(-mOSConfig.MAXDISPERSION,mOSConfig.MAXDISPERSION),math.random(-mOSConfig.MAXDISPERSION,mOSConfig.MAXDISPERSION)
     local vec = vec3(x,y,z)
 
     asteroid = Sector():createEntity(desc)

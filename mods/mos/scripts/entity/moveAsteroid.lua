@@ -1,12 +1,10 @@
 package.path = package.path .. ";data/scripts/lib/?.lua"
 package.path = package.path .. ";data/scripts/entity/?.lua"
-package.path = package.path .. ";mods/mos/config/?.lua"
 
 require ("utility")
 require ("stringutility")
 require ("faction")
-local config = require ("config")
-
+local mOSConfig = require ("mods/mos/config/mos")
 
 --test
 
@@ -33,7 +31,7 @@ function interactionPossible(playerIndex, option)
 
         local dist = craft:getNearestDistance(this)
 
-        if dist < config.CALLDISTANCE then
+        if dist < mOSConfig.CALLDISTANCE then
             prepUI()
             return true
         end
@@ -57,7 +55,7 @@ function initUI()
     window.moveable = 1
     window.closeableWithEscape = true
 
-    window:createLabel(vec2(50, 10), "You will need "..createMonetaryString(config.MONEY_PER_JUMP).."Cr to jump this Asteroid.", 15)
+    window:createLabel(vec2(50, 10), "You will need "..createMonetaryString(mOSConfig.MONEY_PER_JUMP).."Cr to jump this Asteroid.", 15)
     --botton pay
     payButton = window:createButton(Rect(50, 200, 200, 30 + 200 ), "  Pay  ", "onPayPressed")
     if Entity():getValue(MSSN) then
@@ -140,10 +138,10 @@ function server_onPayPressed(playerIndex)
     local owner = checkEntityInteractionPermissions(Entity(), permissions)
     if owner then
         local isMarkedToMove = Entity():getValue(MSSN)
-        local canPay, msg, args = owner:canPay(config.MONEY_PER_JUMP)
+        local canPay, msg, args = owner:canPay(mOSConfig.MONEY_PER_JUMP)
 
         if canPay and (isMarkedToMove == false or isMarkedToMove == nil) then
-            owner:pay("",config.MONEY_PER_JUMP)
+            owner:pay("",mOSConfig.MONEY_PER_JUMP)
             registerAsteroid()
             --print(MOD..VERSION..tostring(owner.name).." payed for Asteroid moving")
         else
