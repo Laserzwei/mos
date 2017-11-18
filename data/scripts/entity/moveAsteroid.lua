@@ -3,7 +3,7 @@ package.path = package.path .. ";mods/mos/scripts/entity/?.lua"
 require ("utility")
 
 MOD = "[mOS]"
-VERSION = "[0.95] "
+VERSION = "[0.95b] "
 
 function initialize()
     if onServer() then

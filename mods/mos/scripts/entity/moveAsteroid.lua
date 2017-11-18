@@ -9,7 +9,7 @@ local mOSConfig = require ("mods/mos/config/mos")
 --test
 
 MOD = "[mOS]"
-VERSION = "[0.95] "
+VERSION = "[0.95b] "
 MSSN = "isMarkedToMove"   --MoveStatuSaveName, gives the movestatus false,nil for not moving. true for needs to be moved
 local window
 local payButton

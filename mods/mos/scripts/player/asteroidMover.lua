@@ -5,7 +5,7 @@ require ("mods/mos/scripts/lib/asteroidSpawningLib")
 Placer = require("placer")
 
 MOD = "[mOS]"                               -- do not change
-VERSION = "[0.95] "
+VERSION = "[0.95b] "
 
 MSSN = "isMarkedToMove"   --MoveStatuSaveName, gives the movestatus false,nil for not moving. true for needs to be moved
 

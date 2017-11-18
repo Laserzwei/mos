@@ -2,7 +2,7 @@ package.path = package.path .. ";data/scripts/lib/?.lua"
 package.path = package.path .. ";mods/mos/scripts/entity/?.lua"
 
 MOD = "[mOS]"                           -- do not change
-VERSION = "[0.95] "
+VERSION = "[0.95b] "
 SectorGenerator = require("SectorGenerator")
 PlanGenerator = require ("plangenerator")
 local mOSConfig = require ("mods/mos/config/mos")
