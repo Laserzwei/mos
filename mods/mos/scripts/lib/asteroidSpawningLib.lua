@@ -18,7 +18,7 @@ function createAsteroidPlan(x, y)
     local generator = SectorGenerator(x, y)
     desc.position = generator:getPositionInSector()
 
-    desc:setPlan(PlanGenerator.makeBigAsteroidPlan(100, 0, Material(0)))
+    desc:setMovePlan(PlanGenerator.makeBigAsteroidPlan(100, 0, Material(0)))
 
     return desc
 end
