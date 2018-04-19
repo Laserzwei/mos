@@ -4,12 +4,8 @@ package.path = package.path .. ";data/scripts/entity/?.lua"
 require ("utility")
 require ("stringutility")
 require ("faction")
-local mOSConfig = require ("mods/mos/config/mos")
+local config = require ("mods/mos/config/mos")
 
---test
-
-MOD = "[mOS]"
-VERSION = "[0.95b] "
 MSSN = "isMarkedToMove"   --MoveStatuSaveName, gives the movestatus false,nil for not moving. true for needs to be moved
 local window
 local payButton
@@ -31,7 +27,7 @@ function interactionPossible(playerIndex, option)
 
         local dist = craft:getNearestDistance(this)
 
-        if dist < mOSConfig.CALLDISTANCE then
+        if dist < config.CALLDISTANCE then
             prepUI()
             return true
         end
@@ -40,7 +36,7 @@ function interactionPossible(playerIndex, option)
 end
 
 function initUI()
-    --print(MOD..VERSION.."UI start")
+    --print(config.VERSION.."UI start")
     local res = getResolution()
     local size = vec2(500, 300)
 
@@ -55,7 +51,7 @@ function initUI()
     window.moveable = 1
     window.closeableWithEscape = true
 
-    window:createLabel(vec2(50, 10), "You will need "..createMonetaryString(mOSConfig.MONEY_PER_JUMP).."Cr to jump this Asteroid.", 15)
+    window:createLabel(vec2(50, 10), "You will need "..createMonetaryString(config.MONEY_PER_JUMP).."Cr to jump this Asteroid.", 15)
     --botton pay
     payButton = window:createButton(Rect(50, 200, 200, 30 + 200 ), "  Pay  ", "onPayPressed")
     if Entity():getValue(MSSN) then
@@ -112,23 +108,23 @@ end
 function onCancelPressed(playerIndex)
     if (onClient())then
         invokeServerFunction("onCancelPressed",Player().index)
-        --print(MOD..VERSION.."Cancel Pressed ")
+        --print(config.VERSION.."Cancel Pressed ")
         window.visible = false
         return
     end
     unregisterAsteroid()
 
-    --print(MOD..VERSION.."active Asteroid Movement cancelled on: ", Entity().index.value)
+    --print(config.VERSION.."active Asteroid Movement cancelled on: ", Entity().index.value)
 end
 
 function onPayPressed()
     if (onClient())then
         invokeServerFunction("server_onPayPressed",Player().index)
-        --print(MOD..VERSION.."Pay Pressed ")
+        --print(config.VERSION.."Pay Pressed ")
         window.visible = false
         return
     else
-        --print(MOD..VERSION.."Pay Pressed on Server")
+        --print(config.VERSION.."Pay Pressed on Server")
     end
 
 end
@@ -138,18 +134,18 @@ function server_onPayPressed(playerIndex)
     local owner = checkEntityInteractionPermissions(Entity(), permissions)
     if owner then
         local isMarkedToMove = Entity():getValue(MSSN)
-        local canPay, msg, args = owner:canPay(mOSConfig.MONEY_PER_JUMP)
+        local canPay, msg, args = owner:canPay(config.MONEY_PER_JUMP)
 
         if canPay and (isMarkedToMove == false or isMarkedToMove == nil) then
-            owner:pay("",mOSConfig.MONEY_PER_JUMP)
+            owner:pay("",config.MONEY_PER_JUMP)
             registerAsteroid()
-            --print(MOD..VERSION..tostring(owner.name).." payed for Asteroid moving")
+            --print(config.VERSION..tostring(owner.name).." payed for Asteroid moving")
         else
             player:sendChatMessage("Asteroid", 1, msg,unpack(args))
             return
         end
     else
-        --print(MOD..VERSION.."Pay pressed server answer by wrong player:".. Player().name .. " | from: " ..Player(playerIndex).name )
+        --print(config.VERSION.."Pay pressed server answer by wrong player:".. Player().name .. " | from: " ..Player(playerIndex).name )
         return
     end
 end

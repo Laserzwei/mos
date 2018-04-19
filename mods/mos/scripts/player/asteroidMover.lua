@@ -3,9 +3,7 @@ package.path = package.path .. ";mods/mos/scripts/lib/?.lua"
 require ("utility")
 require ("mods/mos/scripts/lib/asteroidSpawningLib")
 Placer = require("placer")
-
-MOD = "[mOS]"                               -- do not change
-VERSION = "[0.95b] "
+local config = require ("mods/mos/config/mos")
 
 MSSN = "isMarkedToMove"   --MoveStatuSaveName, gives the movestatus false,nil for not moving. true for needs to be moved
 
@@ -25,8 +23,8 @@ function onPlayerLogOff(playerIndex)
     local unregisterOnSectorLeftValue = Player(playerIndex):unregisterCallback("onSectorLeft", "mos_onSectorLeft")
     local unregisterOnSectorEnteredValue = Player(playerIndex):unregisterCallback("onSectorEntered", "mos_onSectorEntered")
 
-    print(MOD..VERSION.."======mOS unloading Player "..Player(playerIndex).name.."======")
-    print(MOD..VERSION.."Event unregisteration: "..tostring(unregisterOnSectorLeftValue).." | "..tostring(unregisterOnSectorEnteredValue))
+    print(config.VERSION.."======mOS unloading Player "..Player(playerIndex).name.."======")
+    print(config.VERSION.."Event unregisteration: "..tostring(unregisterOnSectorLeftValue).." | "..tostring(unregisterOnSectorEnteredValue))
 end
 
 function onPlayerLogIn(playerIndex)
@@ -47,10 +45,10 @@ function mos_onSectorEntered(playerIndex, x, y)
     local sec = appTimeMs()()
     spawnAsteroidsToMove(asteroidsToMove, playerIndex, x, y)
     asteroidsToMove = {}
-    --print(MOD..VERSION.."Asteroid spawning needed "..(appTimeMs()()- sec).."ms")
+    --print(config.VERSION.."Asteroid spawning needed "..(appTimeMs()()- sec).."ms")
     local sec = appTimeMs()()
     Placer.resolveIntersections()
-    --print(MOD..VERSION.."Asteroid resolving needed "..(appTimeMs()()- sec).."ms")
+    --print(config.VERSION.."Asteroid resolving needed "..(appTimeMs()()- sec).."ms")
 end
 
 function mos_onSectorLeft(playerIndex, x, y)
@@ -72,7 +70,7 @@ function getAsteroidsToMove(playerIndex)
         end
     end
     if numasteroids > 0 then
-        --print(MOD..VERSION.."Spawning "..numasteroids.." Asteroids")
+        --print(config.VERSION.."Spawning "..numasteroids.." Asteroids")
     end
     return retList
 end
@@ -92,5 +90,5 @@ function spawnAsteroidsToMove(asteroidList, playerIndex, x, y)
             numasteroids = numasteroids + 1
         end
     end
-    print(MOD..VERSION.."Spawned "..numasteroids.." Asteroids" , x..":"..y)
+    print(config.VERSION.."Spawned "..numasteroids.." Asteroids" , x..":"..y)
 end
