@@ -163,10 +163,10 @@ end
 function server_ontTransferPressed(playerIndex)
     if callingPlayer == playerIndex then
         if Player(callingPlayer).allianceIndex == Entity().factionIndex then
-            print("transferred Asteroid ".. Entity().index.value .. " to Player" ..Player(callingPlayer).name)
+            printlog("transferred Asteroid ".. Entity().index.value .. " to Player" ..Player(callingPlayer).name)
             Entity().factionIndex = callingPlayer
         else
-            print("transferred Asteroid ".. Entity().index.value .. " to Alliance " ..Alliance(Player(callingPlayer).allianceIndex).name)
+            printlog("transferred Asteroid ".. Entity().index.value .. " to Alliance " ..Alliance(Player(callingPlayer).allianceIndex).name)
             Entity().factionIndex = Player(callingPlayer).allianceIndex
         end
     end

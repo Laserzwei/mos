@@ -42,13 +42,13 @@ has been executed, then the asteroids will be lost.
 function mos_onSectorEntered(playerIndex, x, y)
     if Player().name ~= Player(playerIndex).name then return end
     if next(asteroidsToMove) == nil then return end
-    local sec = appTimeMs()()
+    local sec = appTimeMs()
     spawnAsteroidsToMove(asteroidsToMove, playerIndex, x, y)
     asteroidsToMove = {}
-    --print(config.VERSION.."Asteroid spawning needed "..(appTimeMs()()- sec).."ms")
-    local sec = appTimeMs()()
+    --print(config.VERSION.."Asteroid spawning needed "..(appTimeMs()- sec).."ms")
+    local sec = appTimeMs()
     Placer.resolveIntersections()
-    --print(config.VERSION.."Asteroid resolving needed "..(appTimeMs()()- sec).."ms")
+    --print(config.VERSION.."Asteroid resolving needed "..(appTimeMs()- sec).."ms")
 end
 
 function mos_onSectorLeft(playerIndex, x, y)
@@ -90,5 +90,5 @@ function spawnAsteroidsToMove(asteroidList, playerIndex, x, y)
             numasteroids = numasteroids + 1
         end
     end
-    print(config.VERSION.."Spawned "..numasteroids.." Asteroids" , x..":"..y)
+    printlog(config.VERSION.."Spawned "..numasteroids.." Asteroids" , x..":"..y)
 end

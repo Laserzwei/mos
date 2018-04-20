@@ -36,7 +36,7 @@ end
 
 function onPlayerCreated(index)
     local player = Player(index)
-    Server():broadcastChatMessage("Server", 0, "Player %s created!"%_t, player.name)
+    Server():broadcastChatMessage("Server", ChatMessageType.ServerInfo, "Player %s created!"%_t, player.name)
 end
 
 function onFactionCreated(index)
@@ -45,7 +45,7 @@ end
 
 function onPlayerLogIn(playerIndex)
     local player = Player(playerIndex)
-    Server():broadcastChatMessage("Server", 0, "Player %s joined the galaxy"%_t, player.name)
+    Server():broadcastChatMessage("Server", ChatMessageType.ServerInfo, "Player %s joined the galaxy"%_t, player.name)
 
     player:addScriptOnce("headhunter.lua")
     player:addScriptOnce("eventscheduler.lua")
@@ -59,6 +59,6 @@ end
 
 function onPlayerLogOff(playerIndex)
     local player = Player(playerIndex)
-    Server():broadcastChatMessage("Server", 0, "Player %s left the galaxy"%_t, player.name)
+    Server():broadcastChatMessage("Server", ChatMessageType.ServerInfo, "Player %s left the galaxy"%_t, player.name)
 
 end
