@@ -86,7 +86,7 @@ function spawnAsteroidsToMove(asteroidList, playerIndex, x, y)
     local numasteroids = 0
     for id,factionIndex in pairs(asteroidList) do
         if factionIndex then
-            spawnClaimedAsteroid(factionIndex, x, y, desc)
+            spawnClaimedAsteroid(factionIndex, x, y, copy(desc))
             numasteroids = numasteroids + 1
         end
     end

@@ -16,7 +16,7 @@ function createAsteroidPlan(x, y)
     local generator = SectorGenerator(x, y)
     desc.position = generator:getPositionInSector()
 
-    desc:setMovePlan(PlanGenerator.makeBigAsteroidPlan(100, 0, Material(0)))
+    desc:setPlan(PlanGenerator.makeBigAsteroidPlan(100, 0, Material(0)))
 
     return desc
 end
@@ -25,7 +25,6 @@ function spawnClaimedAsteroid(factionIndex, secX, secY, desc)
 
     local x,y,z = math.random(-config.MAXDISPERSION,config.MAXDISPERSION),math.random(-config.MAXDISPERSION,config.MAXDISPERSION),math.random(-config.MAXDISPERSION,config.MAXDISPERSION)
     local vec = vec3(x,y,z)
-
     asteroid = Sector():createEntity(desc)
     asteroid:moveBy(vec)
     asteroid.factionIndex = factionIndex
