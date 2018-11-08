@@ -2,7 +2,7 @@ local config = {}
 config.Author = "Laserzwei"
 config.ModName = "Move Asteroids"
 config.version = {
-    major=1, minor=0, patch = 0,
+    major=0, minor=19, patch = 0,
     string = function()
         return  config.version.major .. '.' ..
                 config.version.minor .. '.' ..
