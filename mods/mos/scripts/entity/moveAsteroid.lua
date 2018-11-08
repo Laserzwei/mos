@@ -18,7 +18,6 @@ local permissions = {AlliancePrivilege.ManageStations, AlliancePrivilege.FoundSt
 local uiInitialized
 
 function initialize()
-    print(Entity().index.string, Entity().name)
     Entity():registerCallback("onSectorEntered", "onSectorEntered")
 end
 
@@ -44,7 +43,6 @@ function interactionPossible(playerIndex, option)
 end
 
 function initUI()
-    --print(config.version.."UI start")
     local res = getResolution()
     local size = vec2(500, 300)
 
@@ -140,7 +138,6 @@ function server_onPayPressed(playerIndex, selectedSector)
             return
         end
     else
-        --print(config.version.."Pay pressed server answer by wrong player:".. Player().name .. " | from: " ..Player(playerIndex).name )
         return
     end
 end
