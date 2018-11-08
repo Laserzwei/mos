@@ -122,9 +122,13 @@ function server_onPayPressed(playerIndex, selectedSector)
             local x,y = Sector():getCoordinates()
             if selectedSector.x and selectedSector.y then
                 if not (selectedSector.x == x and selectedSector.y == y) then
-                    owner:pay("",config.MONEY_PER_JUMP)
-                    Galaxy():transferEntity(Entity(), selectedSector.x, selectedSector.y, 1)
-                    player:sendChatMessage("Asteroid", 0, [[Asteroid has been transferred to sector \s(%s:%s) !]], selectedSector.x, selectedSector.y)
+                    if config.MAXTRANSFERRANGE >= distance2(vec2(x,y), vec2(selectedSector.x, selectedSector.y)) then
+                        owner:pay("",config.MONEY_PER_JUMP)
+                        Galaxy():transferEntity(Entity(), selectedSector.x, selectedSector.y, 1)
+                        player:sendChatMessage("Asteroid", 0, [[Asteroid has been transferred to sector \s(%s:%s) !]], selectedSector.x, selectedSector.y)
+                    else
+                        player:sendChatMessage("Asteroid", 1, "Target Sector too far away!")
+                    end
                 else
                     player:sendChatMessage("Asteroid", 1, "Asteroid is already in sector ("..x..":"..y..") !")
                 end
