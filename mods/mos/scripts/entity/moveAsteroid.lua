@@ -4,8 +4,13 @@ package.path = package.path .. ";data/scripts/entity/?.lua"
 require ("utility")
 require ("stringutility")
 require ("faction")
+require ("callable")
+
 local config = require ("mods/mos/config/mos")
 
+-- Don't remove or alter the following comment, it tells the game the namespace this script lives in. If you remove it, the script will break.
+-- namespace mOS
+mOS = {}
 
 local selectedSector = {}
 
@@ -17,18 +22,18 @@ local transferToAllianceButton
 local permissions = {AlliancePrivilege.ManageStations, AlliancePrivilege.FoundStations, AlliancePrivilege.ModifyCrafts, AlliancePrivilege.SpendResources}
 local uiInitialized
 
-function initialize()
+function mOS.initialize()
     Entity():registerCallback("onSectorEntered", "onSectorEntered")
 end
 
 -- changing position in target sector
-function onSectorEntered()
+function mOS.onSectorEntered()
     local x,y,z = math.random(-config.MAXDISPERSION, config.MAXDISPERSION), math.random(-config.MAXDISPERSION, config.MAXDISPERSION), math.random(-config.MAXDISPERSION, config.MAXDISPERSION)
     Entity().translation = dvec3(x,y,z)
 end
 
 --is the player that tries to interact also the owner? Are we close enough? then return true.
-function interactionPossible(playerIndex, option)
+function mOS.interactionPossible(playerIndex, option)
     local player = Player(playerIndex)
     local astro = Entity()
     local craft = player.craft
@@ -42,7 +47,7 @@ function interactionPossible(playerIndex, option)
     return false
 end
 
-function initUI()
+function mOS.initUI()
     local res = getResolution()
     local size = vec2(500, 300)
 
@@ -84,7 +89,7 @@ function initUI()
 end
 
 -- find the selected Sector from GalaxyMap()
-function updateClient(timestep)
+function mOS.updateClient(timestep)
     if uiInitialized then
         local x, y =  GalaxyMap():getSelectedCoordinates()
         if not (selectedSector.x == x and selectedSector.y == y) and not (x == 0 and y == 0) then
@@ -94,13 +99,13 @@ function updateClient(timestep)
     end
 end
 
-function onSectorSelectionPressed(playerIndex)
+function mOS.onSectorSelectionPressed(playerIndex)
     if onClient()then
         GalaxyMap():show(Sector():getCoordinates())
     end
 end
 
-function onPayPressed()
+function mOS.onPayPressed()
     if onClient()then
         if selectedSector.x and selectedSector.y then
             invokeServerFunction("server_onPayPressed",Player().index, selectedSector)
@@ -111,7 +116,7 @@ function onPayPressed()
     end
 end
 
-function server_onPayPressed(playerIndex, selectedSector)
+function mOS.server_onPayPressed(playerIndex, selectedSector)
     local player = Player(playerIndex)
     local owner = checkEntityInteractionPermissions(Entity(), permissions)
     if owner then
@@ -141,8 +146,9 @@ function server_onPayPressed(playerIndex, selectedSector)
         return
     end
 end
+callable(mOS, "server_onPayPressed")
 
-function onTransferOwnershipPressed()
+function mOS.onTransferOwnershipPressed()
     invokeServerFunction("server_onTransferOwnershipPressed", Player().index)
     if Player().index == Entity().factionIndex then
         transferToAllianceButton.caption = "Transfer Ownership to You "
@@ -152,7 +158,7 @@ function onTransferOwnershipPressed()
     window.visible = false
 end
 
-function server_onTransferOwnershipPressed(playerIndex)
+function mOS.server_onTransferOwnershipPressed(playerIndex)
     if Player(callingPlayer).allianceIndex == Entity().factionIndex then
         printlog("transferred Asteroid ".. Entity().index.value .. " to Player" ..Player(callingPlayer).name)
         Entity().factionIndex = callingPlayer
@@ -161,3 +167,4 @@ function server_onTransferOwnershipPressed(playerIndex)
         Entity().factionIndex = Player(callingPlayer).allianceIndex
     end
 end
+callable(mOS, "server_onTransferOwnershipPressed")

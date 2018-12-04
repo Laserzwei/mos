@@ -2,6 +2,7 @@ package.path = package.path .. ";data/scripts/lib/?.lua"
 
 require ("stringutility")
 require ("faction")
+require ("callable")
 
 -- if this function returns false, the script will not be listed in the interaction window,
 -- even though its UI may be registered
@@ -56,9 +57,11 @@ function claim()
     local faction, ship, player = getInteractingFaction(callingPlayer)
     if not faction then return end
 
-    Entity().factionIndex = faction.index
-    Entity():addScript("minefounder.lua")
-    Entity():addScript("sellobject.lua")
+    local entity = Entity()
+    entity.factionIndex = faction.index
+    entity:addScriptOnce("minefounder.lua")
+    entity:addScriptOnce("sellobject.lua")
     Entity():addScript("mods/mos/scripts/entity/moveAsteroid.lua")    --mOS
     terminate()
 end
+callable(nil, "claim")
