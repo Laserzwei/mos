@@ -24,16 +24,13 @@ local uiInitialized
 
 function mOS.initialize()
     Entity():registerCallback("onSectorEntered", "onSectorEntered")
-end
-
--- changing position in target sector
-function mOS.onSectorEntered()
-    local x,y,z = math.random(-config.MAXDISPERSION, config.MAXDISPERSION), math.random(-config.MAXDISPERSION, config.MAXDISPERSION), math.random(-config.MAXDISPERSION, config.MAXDISPERSION)
-    Entity().translation = dvec3(x,y,z)
+    if onClient() then
+        Player():registerCallback("onSelectMapCoordinates", "onSelectMapCoordinates")
+    end
 end
 
 --is the player that tries to interact also the owner? Are we close enough? then return true.
-function mOS.interactionPossible(playerIndex, option)
+function mOS.interactionPossible(playerIndex)
     local player = Player(playerIndex)
     local astro = Entity()
     local craft = player.craft
@@ -88,20 +85,26 @@ function mOS.initUI()
     uiInitialized = true
 end
 
--- find the selected Sector from GalaxyMap()
-function mOS.updateClient(timestep)
-    if uiInitialized then
-        local x, y =  GalaxyMap():getSelectedCoordinates()
-        if not (selectedSector.x == x and selectedSector.y == y) and not (x == 0 and y == 0) then
-            selectedSector.x, selectedSector.y = x,y
-            selectSectorButton.tooltip = "Selected Sector: ("..selectedSector.x..":"..selectedSector.y..")"
-        end
+function mOS.onSelectMapCoordinates(x, y)
+    if uiInitialized and not (x == 0 and y == 0) then
+        selectedSector.x, selectedSector.y = x, y
+        selectSectorButton.tooltip = "Selected Sector: ("..selectedSector.x..":"..selectedSector.y..")"
     end
 end
 
-function mOS.onSectorSelectionPressed(playerIndex)
+-- changing position in target sector
+function mOS.onSectorEntered()
+    local x,y,z = math.random(-config.MAXDISPERSION, config.MAXDISPERSION), math.random(-config.MAXDISPERSION, config.MAXDISPERSION), math.random(-config.MAXDISPERSION, config.MAXDISPERSION)
+    Entity().translation = dvec3(x,y,z)
+end
+
+function mOS.onSectorSelectionPressed()
     if onClient()then
-        GalaxyMap():show(Sector():getCoordinates())
+        if selectedSector.x and selectedSector.y then
+            GalaxyMap():show(selectedSector.x, selectedSector.y)
+        else
+            GalaxyMap():show(Sector():getCoordinates())
+        end
     end
 end
 
@@ -116,7 +119,9 @@ function mOS.onPayPressed()
     end
 end
 
-function mOS.server_onPayPressed(playerIndex, selectedSector)
+function mOS.server_onPayPressed(playerIndex, pSelectedSector)
+    if pSelectedSector.x == 0 and pSelectedSector.y == 0 then return end
+    selectedSector = pSelectedSector
     local player = Player(playerIndex)
     local owner = checkEntityInteractionPermissions(Entity(), permissions)
     if owner then
@@ -149,7 +154,7 @@ end
 callable(mOS, "server_onPayPressed")
 
 function mOS.onTransferOwnershipPressed()
-    invokeServerFunction("server_onTransferOwnershipPressed", Player().index)
+    invokeServerFunction("server_onTransferOwnershipPressed")
     if Player().index == Entity().factionIndex then
         transferToAllianceButton.caption = "Transfer Ownership to You "
     elseif Player().allianceIndex == Entity().factionIndex then
@@ -158,7 +163,7 @@ function mOS.onTransferOwnershipPressed()
     window.visible = false
 end
 
-function mOS.server_onTransferOwnershipPressed(playerIndex)
+function mOS.server_onTransferOwnershipPressed()
     if Player(callingPlayer).allianceIndex == Entity().factionIndex then
         printlog("transferred Asteroid ".. Entity().index.value .. " to Player" ..Player(callingPlayer).name)
         Entity().factionIndex = callingPlayer
