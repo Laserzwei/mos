@@ -6,7 +6,7 @@ require ("stringutility")
 require ("faction")
 require ("callable")
 
-local config = require ("mods/mos/config/mos")
+local config = require("config/mos")
 
 -- Don't remove or alter the following comment, it tells the game the namespace this script lives in. If you remove it, the script will break.
 -- namespace mOS

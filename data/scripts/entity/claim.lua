@@ -1,45 +1,4 @@
-package.path = package.path .. ";data/scripts/lib/?.lua"
-
-require ("stringutility")
-require ("faction")
-require ("callable")
-
--- if this function returns false, the script will not be listed in the interaction window,
--- even though its UI may be registered
-function interactionPossible(playerIndex, option)
-
-    local player = Player(playerIndex)
-    local self = Entity()
-
-    local craft = player.craft
-    if craft == nil then return false end
-
-    local dist = craft:getNearestDistance(self)
-
-    if dist < 20 then
-        return true
-    end
-
-    return false, "You are not close enough to claim the object!"%_t
-end
-
--- create all required UI elements for the client side
-function initUI()
-
-    local res = getResolution()
-    local size = vec2(800, 600)
-
-    local menu = ScriptUI()
-    local window = menu:createWindow(Rect(vec2(0, 0), vec2(0, 0)))
-
-    menu:registerWindow(window, "Claim"%_t);
-end
-
-function onShowWindow()
-    invokeServerFunction("claim")
-    ScriptUI():stopInteraction()
-end
-
+-- Overwrite vanilla claim()
 function claim()
     local ok, msg = interactionPossible(callingPlayer)
     if not ok then
@@ -61,7 +20,6 @@ function claim()
     entity.factionIndex = faction.index
     entity:addScriptOnce("minefounder.lua")
     entity:addScriptOnce("sellobject.lua")
-    Entity():addScript("mods/mos/scripts/entity/moveAsteroid.lua")    --mOS
+    entity:addScriptOnce("data/scripts/entity/moveAsteroid.lua")    --mOS
     terminate()
 end
-callable(nil, "claim")
