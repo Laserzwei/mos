@@ -1,13 +1,13 @@
 package.path = package.path .. ";data/scripts/lib/?.lua"
 package.path = package.path .. ";data/scripts/entity/?.lua"
+package.path = package.path .. ";data/config/?.lua"
 
-require ("utility")
-require ("stringutility")
-require ("faction")
-require ("callable")
+include ("utility")
+include ("stringutility")
+include ("faction")
+include ("callable")
 
-local config = require("config/mos")
-
+local config = include("data/config/mos")
 -- Don't remove or alter the following comment, it tells the game the namespace this script lives in. If you remove it, the script will break.
 -- namespace mOS
 mOS = {}
