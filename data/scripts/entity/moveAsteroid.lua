@@ -54,25 +54,24 @@ function mOS.initUI()
     window.showCloseButton = 1
     window.moveable = 1
     window.closeableWithEscape = true
-
-    window:createLabel(vec2(50, 10), "You will need "..createMonetaryString(config.MONEY_PER_JUMP).."Cr to jump this Asteroid.", 15)
+    window:createLabel(vec2(50, 10), string.format("You will need %sCr to jump this Asteroid."%_t, createMonetaryString(config.MONEY_PER_JUMP)), 15)
     --botton pay
-    payButton = window:createButton(Rect(300, 200, 450, 30 + 200 ), "Pay & Move", "onPayPressed")
+    payButton = window:createButton(Rect(300, 200, 450, 30 + 200 ), "Pay & Move"%_t, "onPayPressed")
     payButton.maxTextSize = 15
 
     --button abort
-    selectSectorButton = window:createButton(Rect(50, 200, 200, 30 + 200 ), "Select Sector", "onSectorSelectionPressed")
+    selectSectorButton = window:createButton(Rect(50, 200, 200, 30 + 200 ), "Select Sector"%_t, "onSectorSelectionPressed")
     selectSectorButton.maxTextSize = 15
 
 
-    transferToAllianceButton = window:createButton(Rect(165, 150, 360, 30 + 150 ), "Transfer to Alliance", "onTransferOwnershipPressed")
+    transferToAllianceButton = window:createButton(Rect(165, 150, 360, 30 + 150 ), "Transfer to Alliance "%_t, "onTransferOwnershipPressed")
     transferToAllianceButton.maxTextSize = 15
 
     if Player().allianceIndex then
         if Player().index == Entity().factionIndex then
-            transferToAllianceButton.caption = "Transfer to Alliance "
+            transferToAllianceButton.caption = "Transfer to Alliance "%_t
         elseif Player().allianceIndex == Entity().factionIndex then
-            transferToAllianceButton.caption = "Transfer Ownership to You "
+            transferToAllianceButton.caption = "Transfer Ownership to You "%_t
         end
         transferToAllianceButton.active = true
         transferToAllianceButton.visible = true
@@ -81,14 +80,14 @@ function mOS.initUI()
         transferToAllianceButton.visible = false
     end
 
-    menu:registerWindow(window, "Move Asteroid")
+    menu:registerWindow(window, "Move Asteroid"%_t)
     uiInitialized = true
 end
 
 function mOS.onSelectMapCoordinates(x, y)
     if uiInitialized and not (x == 0 and y == 0) then
         selectedSector.x, selectedSector.y = x, y
-        selectSectorButton.tooltip = "Selected Sector: ("..selectedSector.x..":"..selectedSector.y..")"
+        selectSectorButton.tooltip = string.format("Selected Sector: (%i:%i)"%_t, selectedSector.x, selectedSector.y)
     end
 end
 
@@ -114,7 +113,7 @@ function mOS.onPayPressed()
             invokeServerFunction("server_onPayPressed",Player().index, selectedSector)
             window.visible = false
         else
-            displayChatMessage("No sector selected!", "Asteroid", 1)
+            displayChatMessage("No sector selected!"%_t, "Asteroid", 1)
         end
     end
 end
@@ -133,15 +132,15 @@ function mOS.server_onPayPressed(playerIndex, pSelectedSector)
                     if config.MAXTRANSFERRANGE >= distance2(vec2(x,y), vec2(selectedSector.x, selectedSector.y)) then
                         owner:pay("",config.MONEY_PER_JUMP)
                         Galaxy():transferEntity(Entity(), selectedSector.x, selectedSector.y, 1)
-                        player:sendChatMessage("Asteroid", 0, [[Asteroid has been transferred to sector \s(%s:%s) !]], selectedSector.x, selectedSector.y)
+                        player:sendChatMessage("Asteroid", 0, "Asteroid has been transferred to sector \\s(%i:%i) !"%_t, selectedSector.x, selectedSector.y)
                     else
-                        player:sendChatMessage("Asteroid", 1, "Target Sector too far away!")
+                        player:sendChatMessage("Asteroid", 1, "Target Sector too far away!"%_t)
                     end
                 else
-                    player:sendChatMessage("Asteroid", 1, "Asteroid is already in sector ("..x..":"..y..") !")
+                    player:sendChatMessage("Asteroid", 1, string.format("Asteroid is already in sector \\s(%i:%i) !"%_t, x, y))
                 end
             else
-                player:sendChatMessage("Asteroid", 1, "No sector selected!")
+                player:sendChatMessage("Asteroid", 1, "No sector selected!"%_t)
             end
         else
             player:sendChatMessage("Asteroid", 1, msg,unpack(args))
@@ -156,9 +155,9 @@ callable(mOS, "server_onPayPressed")
 function mOS.onTransferOwnershipPressed()
     invokeServerFunction("server_onTransferOwnershipPressed")
     if Player().index == Entity().factionIndex then
-        transferToAllianceButton.caption = "Transfer Ownership to You "
+        transferToAllianceButton.caption = "Transfer Ownership to You "%_t
     elseif Player().allianceIndex == Entity().factionIndex then
-        transferToAllianceButton.caption = "Transfer to Alliance "
+        transferToAllianceButton.caption = "Transfer to Alliance "%_t
     end
     window.visible = false
 end
