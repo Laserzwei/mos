@@ -16,4 +16,4 @@ https://steamcommunity.com/sharedfiles/filedetails/?id=1691539727
 ![alt text][logo]
 
 
-[logo]: https://github.com/Laserzwei/mos/blob/WSmodupdate/thumbnail.png
+[logo]: https://github.com/Laserzwei/mos/blob/WSmodupdate/thumbnail.jpg
