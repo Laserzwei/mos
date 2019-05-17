@@ -2,7 +2,7 @@
 Allows you to move asteroids across sectors.
 
 Install Instructions
-Put the zip into Avorions mods folder.
+Subscribe to the mod on the steam workshop or put the zip into Avorions mods folder.
 
 See the Wiki:
 https://github.com/Laserzwei/mos/wiki
