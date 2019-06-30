@@ -31,3 +31,6 @@ msgstr "Zielsektor ist zu weit weg!"
 
 msgid "Asteroid is already in sector \\s(%i:%i) !"
 msgstr "Der Asteroid ist schon im Sektor \\s(%i:%i) !"
+
+msgid "Can't transfer to sector \\s(%i:%i)"
+msgstr "Sektor \\s(%i:%i) ist unerreichbar."

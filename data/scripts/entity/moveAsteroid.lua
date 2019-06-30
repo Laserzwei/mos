@@ -22,11 +22,23 @@ local transferToAllianceButton
 local permissions = {AlliancePrivilege.ManageStations, AlliancePrivilege.FoundStations, AlliancePrivilege.ModifyCrafts, AlliancePrivilege.SpendResources}
 local uiInitialized
 
+local stateMessageMap = {
+    [0] = "",
+    [-1] = "No sector selected!",
+    [-2] = "Can't transfer to sector \\s(%i:%i)",
+    [-3] = "Can't transfer to sector \\s(%i:%i)",
+    [-4] = "Asteroid is already in sector \\s(%i:%i) !"}
+
 function mOS.initialize()
     Entity():registerCallback("onSectorEntered", "onSectorEntered")
-    if onClient() then
-        Player():registerCallback("onSelectMapCoordinates", "onSelectMapCoordinates")
-    end
+end
+
+function mOS.onShowWindow()
+    Player():registerCallback("onSelectMapCoordinates", "onSelectMapCoordinates")
+end
+
+function mOS.onCloseWindow()
+    Player():unregisterCallback("onSelectMapCoordinates", "onSelectMapCoordinates")
 end
 
 --is the player that tries to interact also the owner? Are we close enough? then return true.
@@ -85,9 +97,17 @@ function mOS.initUI()
 end
 
 function mOS.onSelectMapCoordinates(x, y)
-    if uiInitialized and not (x == 0 and y == 0) then
-        selectedSector.x, selectedSector.y = x, y
-        selectSectorButton.tooltip = string.format("Selected Sector: (%i:%i)"%_t, selectedSector.x, selectedSector.y)
+    if uiInitialized then
+        local state = mOS.validTransferCoordinates(x, y)
+        if state == 0 then
+            selectedSector.x, selectedSector.y = x, y
+            selectSectorButton.tooltip = string.format("Selected Sector: (%i:%i)"%_t, selectedSector.x, selectedSector.y)
+        elseif state > -4 then
+            displayChatMessage(string.format(stateMessageMap[state]%_t, x, y), "Asteroid", 0)
+            displayChatMessage(string.format(stateMessageMap[state]%_t, x, y), "Asteroid", 1)
+        elseif state == -4 then
+            selectedSector.x, selectedSector.y = x, y -- the later serverside check, needs this to display the error
+        end
     end
 end
 
@@ -110,7 +130,7 @@ end
 function mOS.onPayPressed()
     if onClient()then
         if selectedSector.x and selectedSector.y then
-            invokeServerFunction("server_onPayPressed",Player().index, selectedSector)
+            invokeServerFunction("server_onPayPressed",selectedSector)
             window.visible = false
         else
             displayChatMessage("No sector selected!"%_t, "Asteroid", 1)
@@ -118,29 +138,28 @@ function mOS.onPayPressed()
     end
 end
 
-function mOS.server_onPayPressed(playerIndex, pSelectedSector)
-    if pSelectedSector.x == 0 and pSelectedSector.y == 0 then return end
+function mOS.server_onPayPressed(pSelectedSector)
+    if not pSelectedSector then print("[mOS] invalid sectordata send") return end
     selectedSector = pSelectedSector
-    local player = Player(playerIndex)
+    local player = Player(callingPlayer)
     local owner = checkEntityInteractionPermissions(Entity(), permissions)
     if owner then
         local canPay, msg, args = owner:canPay(config.MONEY_PER_JUMP)
         if canPay then
-            local x,y = Sector():getCoordinates()
-            if selectedSector.x and selectedSector.y then
-                if not (selectedSector.x == x and selectedSector.y == y) then
-                    if config.MAXTRANSFERRANGE >= distance2(vec2(x,y), vec2(selectedSector.x, selectedSector.y)) then
-                        owner:pay("",config.MONEY_PER_JUMP)
-                        Galaxy():transferEntity(Entity(), selectedSector.x, selectedSector.y, 1)
-                        player:sendChatMessage("Asteroid", 0, "Asteroid has been transferred to sector \\s(%i:%i) !"%_t, selectedSector.x, selectedSector.y)
-                    else
-                        player:sendChatMessage("Asteroid", 1, "Target Sector too far away!"%_t)
-                    end
+            local state = mOS.validTransferCoordinates(selectedSector.x, selectedSector.y)
+            if state == 0 then
+                if player.craft.hyperspaceJumpReach >= distance(vec2(Sector():getCoordinates()), vec2(selectedSector.x, selectedSector.y)) then
+                    owner:pay("",config.MONEY_PER_JUMP)
+                    player.craft.hyperspaceCooldown = player.craft.hyperspaceCooldown + 30
+                    Galaxy():transferEntity(Entity(), selectedSector.x, selectedSector.y, 1)
+                    player:sendChatMessage("Asteroid", 0, "Asteroid has been transferred to sector \\s(%i:%i) !"%_t, selectedSector.x, selectedSector.y)
                 else
-                    player:sendChatMessage("Asteroid", 1, string.format("Asteroid is already in sector \\s(%i:%i) !"%_t, x, y))
+                    player:sendChatMessage("Asteroid", ChatMessageType.Error, "Target Sector too far away!"%_t)
                 end
             else
-                player:sendChatMessage("Asteroid", 1, "No sector selected!"%_t)
+                local message = string.format(stateMessageMap[state]%_t, selectedSector.x, selectedSector.y)
+                player:sendChatMessage("Asteroid", ChatMessageType.Error, message)
+                player:sendChatMessage("Asteroid", ChatMessageType.Normal, message)
             end
         else
             player:sendChatMessage("Asteroid", 1, msg,unpack(args))
@@ -172,3 +191,23 @@ function mOS.server_onTransferOwnershipPressed()
     end
 end
 callable(mOS, "server_onTransferOwnershipPressed")
+
+-- Checks for ill-logic sectors. Does not check for range restrictions
+-- 0 is valid
+-- <0 is invalid
+function mOS.validTransferCoordinates(x, y)
+    local sX, sY = Sector():getCoordinates()
+    if not x or not y then
+        return -1
+    end
+    if x > 500 or x < -500 or y > 500 or y < -500 then
+        return -2
+    end
+    if (x == 0 and y == 0) then
+        return -3
+    end
+    if (x == sX and y == sY) then
+        return -4
+    end
+    return 0
+end
