@@ -1,0 +1,36 @@
+
+msgid "You will need %sCr to jump this Asteroid."
+msgstr "Den Asteroid zu bewegen wird %sCr kosten."
+
+msgid "Move Asteroid"
+msgstr "Asteroid bewegen"
+
+msgid "Pay & Move"
+msgstr "losschicken"
+
+msgid "Select Sector"
+msgstr "Wähle Sektor"
+
+msgid "Transfer to Alliance "
+msgstr "Der Allianz übergeben"
+
+msgid "Transfer Ownership to You "
+msgstr "An dich nehmen"
+
+msgid "Selected Sector: (%i:%i)"
+msgstr "Ausgewählter Sektor: (%i:%i)"
+
+msgid "No sector selected!"
+msgstr "Kein Sektor ausgewählt!"
+
+msgid "Asteroid has been transferred to sector \\s(%i:%i) !"
+msgstr "Der Asteroid ist nun in Sektor: \\s(%i:%i) !"
+
+msgid "Target Sector too far away!"
+msgstr "Zielsektor ist zu weit weg!"
+
+msgid "Asteroid is already in sector \\s(%i:%i) !"
+msgstr "Der Asteroid ist schon im Sektor \\s(%i:%i) !"
+
+msgid "Can't transfer to sector \\s(%i:%i)"
+msgstr "Sektor \\s(%i:%i) ist unerreichbar."

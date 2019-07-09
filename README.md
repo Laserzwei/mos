@@ -2,12 +2,18 @@
 Allows you to move asteroids across sectors.
 
 Install Instructions
-Put the contents of the /data/ folder, from the zip, into steam/.../Avorion/data/
-
-This should overwrite /scripts/entity/claim.lua
-
-Put the contents of the /mods/ folder, from the zip, into steam/.../Avorion/mods/
-
-This should add the folder /mods/mOs/.
+Subscribe to the mod on the steam workshop or put the zip into Avorions mods folder.
 
 See the Wiki:
+https://github.com/Laserzwei/mos/wiki
+
+Available in the steamworkshop here:
+
+https://steamcommunity.com/sharedfiles/filedetails/?id=1691539727
+
+
+
+![alt text][logo]
+
+
+[logo]: https://github.com/Laserzwei/mos/blob/WSmodupdate/thumbnail.jpg
