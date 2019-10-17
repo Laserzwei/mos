@@ -39,7 +39,7 @@ meta =
     --      {id = "OptionalMod", min = "0.2", optional = true}, -- we support OptionalMod optionally, starting at version 0.2
     -- },
     dependencies = {
-        {id = "Avorion", min = "0.23.*", max = "0.26.*"},
+        {id = "Avorion", min = "0.23.*", max = "0.27.*"},
         {id = "1691591293", min = "1.0"}  -- claimhook mod
     },
 
