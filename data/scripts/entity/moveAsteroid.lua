@@ -151,7 +151,7 @@ function mOS.server_onPayPressed(pSelectedSector)
                 if player.craft.hyperspaceJumpReach >= distance(vec2(Sector():getCoordinates()), vec2(selectedSector.x, selectedSector.y)) then
                     owner:pay("",config.MONEY_PER_JUMP)
                     player.craft.hyperspaceCooldown = player.craft.hyperspaceCooldown + 30
-                    Galaxy():transferEntity(Entity(), selectedSector.x, selectedSector.y, 1)
+                    Sector():transferEntity(Entity(), selectedSector.x, selectedSector.y, SectorChangeType.Jump)
                     player:sendChatMessage("Asteroid", 0, "Asteroid has been transferred to sector \\s(%i:%i) !"%_t, selectedSector.x, selectedSector.y)
                 else
                     player:sendChatMessage("Asteroid", ChatMessageType.Error, "Target Sector too far away!"%_t)
